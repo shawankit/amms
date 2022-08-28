@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "username": "root",
+    "password": "root",
+    "database": "DEV-milkspace",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": "5435"
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "TEST-milkspace",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": "5435"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "milkspace",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

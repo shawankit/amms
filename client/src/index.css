@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+  }
+
+  .ant-table-tbody{
+    padding: 5px !important;
+  }
+  .ant-table-thead > tr > th,.ant-table-tbody > tr > td{
+    padding: 5px !important;
+  }
+
+  
+  
+  .site-layout .site-layout-background {
+    background: #fff;
+  }

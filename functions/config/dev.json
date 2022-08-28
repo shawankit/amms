@@ -1,0 +1,48 @@
+{
+  "port": 8000,
+  "env": "development",
+  "email": {
+    "no_reply": {
+      "user": "",
+      "password": ""
+    }
+  },
+  "jwt_secret": "jwt_secret_key",
+  "enableGoogleLogger": false,
+  "logger": {
+    "project": "neetprepchatbot-prod",
+    "keyFile": "./logs_config/production.json"
+  },
+  "server": true,
+  "sms": {
+    "TWILIO_ACCOUNT_SID": "ACTWILIO_ACCOUNT_SID",
+    "TWILIO_AUTH_TOKEN": "TWILIO_AUTH_TOKEN",
+    "TWILIO_NUMBER": "TWILIO_NUMBER"
+  },
+  "otp": {
+    "expires_in": 5
+  },
+  "proxyApiUrl": "http://localhost:3000/api/proxy",
+  "fcm": {
+    "path": "",
+    "url": ""
+  },
+  "google": {
+    "GOOGLE_CALLBACK_URL": "/auth/google/callback",
+    "GOOGLE_CLIENT_ID": "appid.apps.googleusercontent.com",
+    "GOOGLE_CLIENT_SECRET": "secret",
+    "successRedirect": {
+      "admin": "http://localhost:4201/admin/login/success"
+    },
+    "failureRedirect": {
+      "admin": "http://localhost:4201/admin/login"
+    }
+  },
+  "awsS3": {
+    "AWS_ACCESS_KEY_ID": "KEY",
+    "AWS_SECRET_ACCESS_KEY": "SECRET",
+    "region": "ap-south-1",
+    "bucketName": "test",
+    "url": "https://test.s3.ap-south-1.amazonaws.com/"
+  }
+}
