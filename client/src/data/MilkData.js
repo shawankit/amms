@@ -17,7 +17,7 @@ const MilkData = [
         type: 'select',
         inputType: 'text',
         list: 'taxable',
-        defaultValue: 'Exempted'
+        defaultValue: 'No'
     },
     {
         label : "GST Rate (%)",
