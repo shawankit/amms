@@ -50,14 +50,14 @@ const EditableCell = ({
         const gstRate = customerData.type == 'special' ? milk[value].normal.gstRate : milk[value].gstRate;
         newValues = { categoryName: milk[value].name, categoryId: value, rate: milk[value].rate, gstRate };
         if(record.quantity != undefined){
-          newValues.total = parseFloat(newValues.rate) * parseInt(record.quantity);
+          newValues.total = parseFloat(newValues.rate) * parseFloat(record.quantity);
           newValues.totalWithTax = newValues.total + (newValues.total * newValues.gstRate) / 100;
         }
     }
 
     if(dataIndex == 'quantity' && record.rate != undefined){
       newValues = { quantity: value };
-      newValues.total = parseFloat(record.rate) * parseInt(value);
+      newValues.total = parseFloat(record.rate) * parseFloat(value);
       newValues.totalWithTax = newValues.total + (newValues.total * record.gstRate) / 100;
     }
 
