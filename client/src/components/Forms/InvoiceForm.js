@@ -58,13 +58,13 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
         console.log(response);
         if(response?.data?.status == true){
             swal("Succesfully generated invoice details", "success");
+            reset();    
+            await callback(formData.customerId, response.data.entity.customer);
         }
         else{
             swal("OOPS Something Went wrong", "error");
         }
-        reset();
-        console.log(customerMap[formData.customerId]);
-        await callback(formData.customerId, customerMap[formData.customerId]);
+        
     }
 
     const reset = () => {
@@ -102,7 +102,6 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
                         onChange={onChange}
                         key={'invoiceDate'}
                         value={formData ? formData['invoiceDate'] : ''}
-                        disabled
                     />     
                 </Row>
                 <Row>

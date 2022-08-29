@@ -10,28 +10,44 @@ const GetAllMilkCategoryQuery = require('../../milk-category/queries/get-all-mil
 const CreateBulkStocksQuery = require('../queries/create-bulk-stocks-queries');
 const GetTodayStocksQuery = require('../queries/get-todays-stocks-query');
 
+const subtractStocksFromMilk = (milks, stocks) => {
+    const stockMap = {};
+    for (let index = 0; index < stocks.length; index++) {
+        const element = stocks[index];
+        stockMap[element.categoryId] = true;
+    }
+
+    const list = [];
+    for (let index = 0; index < milks.length; index++) {
+        const element = milks[index];
+        if(!stockMap[element.id]){
+            list.push(element);
+        }
+    }
+
+    return list;
+}
+
 module.exports.perform = async () => {
     const lastDay = moment().subtract(24, 'h').toDate();
     return composeResult(
         () => db.execute(new GetTodayStocksQuery()),
-        (sales) => composeResult(
-            (stocks) => {
-                if(stocks.length > 0){
-                    return db.execute(new CreateBulkStocksQuery(stocks.map((stock) => ({
-                        id: uuid.v4(), 
-                        categoryId: stock.categoryId,
-                        carryForward: sales[stock.categoryId] ? sales[stock.categoryId] : 0
-                    }))))
-                }
-                return composeResult(
-                    (milks) => db.execute(new CreateBulkStocksQuery(milks.map((milk) => ({
-                        id: uuid.v4(), 
-                        categoryId: milk.id
-                    })))),
-                    () => db.find(new GetAllMilkCategoryQuery())
-                )();
-            },
-            () => db.execute(new GetTodayStocksQuery(lastDay)),
+        (sales) =>composeResult(
+            (milks) => composeResult(
+                (stocks) => {
+                    const milkList = subtractStocksFromMilk(milks, stocks);
+                    if(milkList.length > 0){
+                        return db.execute(new CreateBulkStocksQuery(milkList.map((milk) => ({
+                            id: uuid.v4(), 
+                            categoryId: milk.id,
+                            carryForward: sales[milk.id] ? sales[milk.id] : 0
+                        }))))
+                    } 
+                    return Result.Ok({});
+                },
+                () => db.execute(new GetTodayStocksQuery())
+            )(),
+            () => db.find(new GetAllMilkCategoryQuery())
         )(),
         (sales) => Result.Ok(sales.reduce((prev, current) => ({...prev, [current.category_id]: current.total_sold}), {})),
         () => db.execute(new GetLastDaySaleQuery())

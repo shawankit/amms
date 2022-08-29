@@ -12,7 +12,8 @@ const { Title } = Typography;
 
 const PaymentModal = ({ visible , setVisible , customer , callback}) => {
     const initialData = {
-        amountReceived: 0
+        amountReceived: 0,
+        additionalDue: 0
     };
     const [formData, setFormData] = useState(initialData);
     const [invoices, setInvoices] = useState([]);
@@ -26,7 +27,7 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
         console.log(response);
         setInvoices(response?.data?.entity.map((inv) => ({
             ...inv,
-            createdAt: moment(inv.createdAt).format('DD-MM-YYYY'),
+            invoiceDate: inv.invoiceDate? moment(inv.invoiceDate).format('DD-MM-YYYY') : null,
             paymentDate: inv.paymentDate ? moment(inv.paymentDate).format('DD-MM-YYYY') : null
         })));
     }
@@ -55,6 +56,7 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
         if(close) setVisible(false);
 
         await callback();
+        setFormData(initialData);
     }
 
     const onClose = () => {
@@ -78,6 +80,8 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
         key: column.name,
         width: '150px'
     })).filter((column) => column.dataIndex !== 'customerName');
+
+    const totalDue = invoices.reduce((total, invoice) => invoice.total + total, 0);
 
     return (
         <>
@@ -111,6 +115,9 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                     </Col>
                 </Row>
                 <Row className="w-full">
+                    <Col span={24}>
+                        <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >Total Due (including Prev due) : {customer?.due}</Title>
+                    </Col>
                     <InputField
                         label={'Amount Received'}
                         type={'number'} 
@@ -118,6 +125,16 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                         onChange={onChange}
                         key={'amountReceived'}
                         value={formData['amountReceived']}
+                        lcol={8}
+                        icol={16}
+                    />
+                     <InputField
+                        label={'Previous Due'}
+                        type={'number'} 
+                        name={'additionalDue'}
+                        onChange={onChange}
+                        key={'additionalDue'}
+                        value={formData['additionalDue']}
                         lcol={8}
                         icol={16}
                     />

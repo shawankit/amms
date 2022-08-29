@@ -1,4 +1,4 @@
-const { Invoice, MilkCategory } = require("../../../models");
+const { Invoice, MilkCategory,Customer } = require("../../../models");
 
 module.exports = class GetAInvoiceQuery {
     constructor(id){
@@ -12,6 +12,10 @@ module.exports = class GetAInvoiceQuery {
                 {
                     model: MilkCategory,
                     as: 'milkCategory'
+                },
+                {
+                    model: Customer,
+                    as: 'customer'
                 }
             ]
         });

@@ -15,7 +15,8 @@ module.exports = class GetAllMilkCategoryQuery {
                     model: MilkCategory,
                     as: 'normal'
                 }
-            ]
+            ],
+            order: ['createdAt']
         });
     }
 }

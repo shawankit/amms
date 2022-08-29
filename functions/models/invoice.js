@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
       values: ['Not Paid', 'Partial Payment', 'Full Payment']
     },
     amountPaid: DataTypes.INTEGER,
-    paymentDate: DataTypes.DATE
+    paymentDate: DataTypes.DATE,
+    invoiceDate: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Invoice',

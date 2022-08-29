@@ -14,17 +14,8 @@ const get = async (req) => {
 
     logInfo('Request to get todays stocks',{});
 
-    const response = await composeResult(
-        (stocks) => {
-            if(stocks.length == 0){
-                return perform();
-            }
-            return Result.Ok(stocks);
-        },
-        () => db.execute(new GetTodayStocksQuery())
-    )();
-        
-
+    const response = await perform();
+    
     return respond(response,'Successfully fetched stocks', 'Failed to get stocks')
 }
 

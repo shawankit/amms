@@ -10,17 +10,19 @@ const UpdateCustomerDueQuery = require('../../customers/queries/update-customer-
 const SettleDueInvoicesServices = require('../services/settle-due-invoices-service');
 
 const post = async (req) => {
-    const { amountReceived } = req.body;
+    const { amountReceived, additionalDue } = req.body;
 
     const { customerId } = req.params;
 
-    logInfo('Request to create payment-receipt',{customerId , amountReceived});
+    logInfo('Request to create payment-receipt',{customerId , amountReceived, additionalDue});
 
     const id = uuid.v4();
 
+    const remainingAmount = parseFloat(amountReceived) - parseFloat(additionalDue);
+
     const response = await composeResult(
-        () => SettleDueInvoicesServices.perform({ customerId , amountReceived}),
-        () => db.update(new UpdateCustomerDueQuery(customerId, -amountReceived)),
+        () => remainingAmount > 0 ? SettleDueInvoicesServices.perform({ customerId , amountReceived: remainingAmount}) : Result.Ok({}),
+        () => db.update(new UpdateCustomerDueQuery(customerId, -1 * remainingAmount)),
         () => db.execute(new CreatePaymentReceiptQuery(id, customerId, amountReceived))
     )();
 

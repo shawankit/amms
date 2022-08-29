@@ -7,7 +7,7 @@ const InvoiceData = [
     },
     {
         label : "Date",
-        name: 'createdAt',
+        name: 'invoiceDate',
         type: 'input',
         inputType: 'text'
     },

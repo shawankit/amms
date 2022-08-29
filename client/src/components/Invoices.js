@@ -28,7 +28,7 @@ const Invoices = () => {
         setInvoices(response?.data?.entity.map((inv) => ({
             ...inv,
             customerName: inv.customer.name,
-            createdAt: moment(inv.createdAt).format('DD-MM-YYYY'),
+            invoiceDate: inv.invoiceDate? moment(inv.invoiceDate).format('DD-MM-YYYY') : null,
             paymentDate: inv.paymentDate ? moment(inv.paymentDate).format('DD-MM-YYYY') : null
         })));
     }

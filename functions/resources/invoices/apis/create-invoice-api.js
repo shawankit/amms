@@ -14,11 +14,11 @@ const UpdateCustomerDueQuery = require('../../customers/queries/update-customer-
 const getInvoiceNumber = (ic) => `${ic.prefix ? `${ic.prefix}/` : ''}${ic.number}${ic.suffix ? `/${ic.suffix}` : ''}`
 
 const post = async (req) => {
-    const { customerId , total, transactions }
+    const { customerId , total, transactions, invoiceDate }
      = req.body;
 
-     console.log(customerId , total, transactions);
-    logInfo('Request to create invoices',{ customerId , total, transactions });
+     console.log(customerId , total, transactions, invoiceDate);
+    logInfo('Request to create invoices',{ customerId , total, transactions, invoiceDate });
 
     const invoiceId = uuid.v4();
 
@@ -26,7 +26,7 @@ const post = async (req) => {
         () => db.findOne(new GetAInvoiceQuery(invoiceId)),
         () => db.update(new UpdateCustomerDueQuery(customerId, total)),
         () => db.create(new CreateBulkTransactionQuery(transactions.map((transaction) => ({ ...transaction, id: uuid.v4(), customerId, invoiceId })))),
-        (ic) => db.execute(new CreateInvoiceQuery(invoiceId,getInvoiceNumber(ic),customerId, total)),
+        (ic) => db.execute(new CreateInvoiceQuery(invoiceId,getInvoiceNumber(ic),customerId, total, invoiceDate)),
         () => db.execute(new UpdateInvoiceConfigQuery()),
     )();
 

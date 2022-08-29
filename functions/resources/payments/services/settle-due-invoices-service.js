@@ -18,6 +18,7 @@ module.exports.perform = async ({ customerId, amountReceived }) => {
             let amountLeft = amountReceived;
             for (let i = 0; i < invoices.length; i++) {
                 const invoice = invoices[i];
+                console.log('ddd',invoice.total,invoice.amountPaid  , amountLeft, invoice.total - invoice.amountPaid <= amountLeft)
                 if(invoice.total - invoice.amountPaid <= amountLeft){
                     amountLeft -= (invoice.total - invoice.amountPaid);
                     promises.push(updateInvoice(invoice.id, invoice.total, 'Full Payment', new Date()));
