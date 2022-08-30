@@ -116,7 +116,9 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                 </Row>
                 <Row className="w-full">
                     <Col span={24}>
-                        <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >Total Due (including Prev due) : {customer?.due}</Title>
+                        <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
+                           { customer?.due >= 0 ? `Total Due (including Prev due) : ${customer?.due}` : `Total Advance : ${-customer?.due}`}
+                        </Title>
                     </Col>
                     <InputField
                         label={'Amount Received'}

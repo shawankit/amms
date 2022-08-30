@@ -117,7 +117,7 @@ const EditableCell = ({
     return <td {...restProps}>{childNode}</td>;
 };
 
-const EditableTable = ({ setTransactions, customerData, transactions, milk }) => {
+const EditableTable = ({ setTransactions, customerData, transactions, milk, notEditable }) => {
   const [dataSource, setDataSource] = useState([]);
   const [count, setCount] = useState(0);
 
@@ -135,7 +135,7 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk }) =>
       title: 'Item Name',
       dataIndex: 'categoryName',
       width: '35%',
-      editable: true
+      editable: !notEditable
     },
     {
       title: 'Rate',
@@ -146,7 +146,7 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk }) =>
       title: 'Quantity',
       dataIndex: 'quantity',
       width: '10%',
-      editable: true
+      editable: !notEditable
     },
     {
       title: 'Total',
