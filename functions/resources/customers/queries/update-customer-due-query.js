@@ -2,10 +2,11 @@ const { Customer } = require("../../../models");
 
 
 module.exports = class UpdateCustomerDueQuery {
-    constructor(id,due){
+    constructor(id,due, previousDue){
         this.details = {
             id,
-            due
+            due,
+            previousDue
         }
     }
 
@@ -17,6 +18,10 @@ module.exports = class UpdateCustomerDueQuery {
         });
 
         customer.due += this.details.due;
+
+        if(this.details.previousDue) {
+            customer.previousDue += this.details.previousDue;
+        }
 
         return customer.save();
     }

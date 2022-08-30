@@ -115,11 +115,27 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                     </Col>
                 </Row>
                 <Row className="w-full">
+                    { customer?.previousDue > 0 ? 
+                        <>
+                            <Col span={24}>
+                                <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
+                                { `Previous Due : ${customer?.previousDue}`}
+                                </Title>
+                            </Col>
+                            <Col span={24}>
+                                <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
+                                { `Due : ${ customer?.due >= 0 ? customer?.due - customer?.previousDue : 0 }`}
+                                </Title>
+                            </Col>
+                        </> : null
+                    }
+
                     <Col span={24}>
                         <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
-                           { customer?.due >= 0 ? `Total Due (including Prev due) : ${customer?.due}` : `Total Advance : ${-customer?.due}`}
+                           { customer?.due >= 0 ? `Total Due : ${customer?.due}` : `Total Advance : ${-customer?.due}`}
                         </Title>
                     </Col>
+                   
                     <InputField
                         label={'Amount Received'}
                         type={'number'} 

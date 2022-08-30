@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'normal'
     },
     mobile: DataTypes.STRING,
-    due: DataTypes.DOUBLE
+    due: DataTypes.DOUBLE,
+    previousDue: DataTypes.DOUBLE
   }, {
     sequelize,
     modelName: 'Customer',
