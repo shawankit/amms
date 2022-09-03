@@ -50,15 +50,15 @@ const EditableCell = ({
         const gstRate = customerData.type == 'special' ? milk[value].normal.gstRate : milk[value].gstRate;
         newValues = { categoryName: milk[value].name, categoryId: value, rate: milk[value].rate, gstRate };
         if(record.quantity != undefined){
-          newValues.total = parseFloat(newValues.rate) * parseFloat(record.quantity);
-          newValues.totalWithTax = newValues.total + (newValues.total * newValues.gstRate) / 100;
+          newValues.total = Math.round(parseFloat(newValues.rate) * parseFloat(record.quantity) * 10) / 10;
+          newValues.totalWithTax = Math.round((newValues.total + (newValues.total * newValues.gstRate) / 100) * 10) / 10;
         }
     }
 
     if(dataIndex == 'quantity' && record.rate != undefined){
       newValues = { quantity: value };
-      newValues.total = parseFloat(record.rate) * parseFloat(value);
-      newValues.totalWithTax = newValues.total + (newValues.total * record.gstRate) / 100;
+      newValues.total =  Math.round(parseFloat(record.rate) * parseFloat(value) * 10) / 10;
+      newValues.totalWithTax = Math.round((newValues.total + (newValues.total * record.gstRate) / 100) * 10) / 10 ;
     }
 
     handleSave({ ...record, ...newValues });
@@ -163,7 +163,10 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
       dataIndex: 'totalWithTax',
       width: '10%',
     },
-    {
+  ];
+
+  if(!notEditable){
+    defaultColumns.push({
       title: 'Action',
       dataIndex: 'operation',
       width: '5%',
@@ -173,8 +176,8 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
             <a>Delete</a>
           </Popconfirm>
         ) : null : null,
-    },
-  ];
+    })
+  }
 
   const handleAdd = () => {
     const newData = {
@@ -243,19 +246,20 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
   const totalRow = {
     key: count + 2,
     categoryName: `Total Amount`,
-    totalWithTax: dataSource.reduce((total, current) => total + current.totalWithTax, 0)
+    totalWithTax: Math.round(dataSource.reduce((total, current) => total + current.totalWithTax, 0))
   }
   return (
     <div>
-      <Button
-        onClick={handleAdd}
-        type="primary"
-        style={{
-          marginBottom: 16,
-        }}
-      >
+      { !notEditable ? 
+        <Button
+          onClick={handleAdd}
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+        > 
         Add a item
-      </Button>
+      </Button> : null }
       <Table
         components={components}
         rowClassName={() => 'editable-row'}

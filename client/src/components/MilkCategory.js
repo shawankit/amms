@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import millify from 'millify';
 import { Typography, Row, Col, Statistic, Table, Button } from 'antd';
-import { getAllMilkCategories } from '../api';
+import { deleteMilCategory, getAllMilkCategories } from '../api';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import MilkData from '../data/MilkData';
 import MilkFom from './Forms/MilkForm';
+import { sweetalertMessage, sweetalertValidate } from '../util/util';
 
 const { Title } = Typography;
 
@@ -30,7 +31,13 @@ const MilkCategory = () => {
     const  onDelete = async (data) => {
         const isConfirm = confirm('Are you sure you want to delete ?')
         if(isConfirm){
-            await deleteGodown(data.id);
+            const response = await deleteMilCategory(data.id);
+            if(response?.data?.status){
+                sweetalertMessage('Succesfully Deleted')
+            }
+            else{
+                sweetalertValidate('OOPS!! Something went wrong')
+            }
             fetchMilkCategories();
         } 
     }

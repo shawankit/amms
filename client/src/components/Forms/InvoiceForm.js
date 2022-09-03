@@ -22,6 +22,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
     const [formData, setFormData] = useState(initialData);
     const customerMap = customers ? customers.reduce((previous, current) => ({...previous,[current.id]: current}), {}) : {};
     const [milk, setMilks] = useState({});
+    const [newCustomers, setNewCustomers] = useState([]);
 
     const fetchMilkCategories = async () => {
         const customerData = formData && formData.customerId && customerMap[formData.customerId]
@@ -39,6 +40,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
     }
 
     const onSelectChange = (name, value) => {
+        console.log('cust', value);
         setFormData({...formData,[name]: value});
     }
 
@@ -52,7 +54,8 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
             sweetalertValidate('Please select customer');
             return;
         }
-        formData.total = formData.transactions.reduce((total,t) => total + (t.totalWithTax), 0);
+        formData.total = Math.round(formData.transactions.reduce((total,t) => total + (t.totalWithTax), 0));
+        formData.existingUser = !!customerMap[formData.customerId];
     
         let response = await createInvoice(formData);
         console.log(response);
@@ -75,17 +78,24 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
         setFormData({...formData,'transactions': transactions});
     }
 
+    const handleSearch = (value) => {
+        if (value) {
+            setNewCustomers([{ value: value, text: value }]);
+        }
+    }
+
     return (
         <>
             <div>
                 <Row>
                     <SelectField
                         label={'Customer'}
-                        option={customers ? customers.map((item) => ({ value: item.id, text: item.name})) : []}
+                        option={customers ? [...customers.map((item) => ({ value: item.id, text: item.name})), ...newCustomers] : [...newCustomers]}
                         showSearch
                         optionFilterProp="children"
                         value={formData ? formData['customerId'] : ''}
                         showArrow={false}
+                        onSearch={(value) => handleSearch(value)}
                         onChange={(value) => onSelectChange('customerId', value)}
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -108,7 +118,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
                     <Col  span={24}>
                         <EditableTable 
                             setTransactions={setTransactions}
-                            customerData={formData && formData.customerId && customerMap[formData.customerId]}
+                            customerData={formData && formData.customerId && ( customerMap[formData.customerId] || { type: 'normal' } ) }
                             transactions={formData && formData.transactions}
                             milk={milk}
                         />

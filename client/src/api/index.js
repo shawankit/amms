@@ -17,6 +17,7 @@ export const deleteMilCategory = (id) => API.delete(`/milk-category/${id}`);
 export const createInvoice = (invoice) => API.post("/invoices", invoice);
 export const getAllInvoices = () => API.get(`/invoices`);
 export const getInvoicesByDate = (date) => API.get(`/invoices?date=${date}`);
+export const getInvoiceById = (invoiceId) => API.get(`/invoices/${invoiceId}`);
 
 export const getDueInvoices = (customerId) => API.get(`/customers/${customerId}/unpaid-invoices`);
 export const createPayments = (customerId, payment) => API.post(`/customers/${customerId}/payments`, payment);

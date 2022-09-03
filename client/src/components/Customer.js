@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import millify from 'millify';
 import { Typography, Row, Col, Statistic, Table, Button } from 'antd';
 import CustomerForm from './Forms/CustomerForm';
-import { getAllCustomers } from '../api';
+import { deleteCustomer, getAllCustomers } from '../api';
 import CustomerData from '../data/CustomerData';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { sweetalertMessage, sweetalertValidate } from '../util/util';
 
 const { Title } = Typography;
 
@@ -30,7 +31,13 @@ const Customer = () => {
     const  onDelete = async (data) => {
         const isConfirm = confirm('Are you sure you want to delete ?')
         if(isConfirm){
-            await deleteGodown(data.id);
+            const response = await deleteCustomer(data.id);
+            if(response?.data?.status){
+                sweetalertMessage('Succesfully Deleted')
+            }
+            else{
+                sweetalertValidate('OOPS!! Something went wrong')
+            }
             fetchCustomers();
         } 
     }

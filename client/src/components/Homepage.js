@@ -108,7 +108,6 @@ const Homepage = () => {
       key: 'dues',
       width: '40%',
       render: (data) => {
-        console.log(data);
         if(data.due == 0 || data.due == null) return  <div key={'due'+data.id}> {data.due} </div>;
         return data.due > 0 ?
          <div key={'due'+data.id} className='text-red-800'>{data.due} (Due)</div> :

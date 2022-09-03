@@ -8,6 +8,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InvoiceForm from './Forms/InvoiceForm';
 import moment from 'moment';
 import PaymentModal from './Modal/PaymentModal';
+import InvoiceDetailsModal from './Modal/InvoiceDetailModal';
 
 const { Title } = Typography;
 
@@ -17,6 +18,8 @@ const Invoices = () => {
     const [invoices, setInvoices] = useState(null);
     const [visible, setVisible] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [visibleID, setVisibleID] = useState(false);
+    const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
 
     const fetchCustomers = async () => {
         const response = await getAllCustomers();
@@ -38,6 +41,28 @@ const Invoices = () => {
         fetchInvoices();
     },[]);
 
+    const openInvoiceDetail = (invoiceId) => {
+        setSelectedInvoiceId(invoiceId);
+        setVisibleID(true);  
+    }
+
+    const getRender = (column) => {
+        if(column.name == 'invoiceNo'){
+            return {
+                render: (invoiceNo, data) => {
+                    console.log('data', data)
+                    return (
+                        <div>
+                            <a onClick={() => openInvoiceDetail(data.id)} className='underline text-blue-900'>
+                            { invoiceNo }
+                            </a>
+                        </div>
+                    )
+                }
+            }
+        }
+        return {};
+    }
     const fieldData = InvoiceData;
     const columns = fieldData.map((column) => ({
         title:  ( 
@@ -47,7 +72,8 @@ const Invoices = () => {
         ),
         dataIndex: column.name,
         key: column.name,
-        width: '150px'
+        width: '150px',
+        ...getRender(column)
     }));
 
     return (
@@ -76,6 +102,7 @@ const Invoices = () => {
                     </Col>
                 </Row> 
                 <PaymentModal visible={visible} setVisible={setVisible} customer={selectedCustomer}  callback={fetchInvoices}/>
+                <InvoiceDetailsModal visible={visibleID} setVisible={setVisibleID} invoiceId={selectedInvoiceId} />
             </div>
         </div>
     );
