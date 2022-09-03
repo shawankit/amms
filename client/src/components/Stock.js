@@ -14,7 +14,7 @@ const Stock = () => {
     const fetchStocks = async () => {
         const response = await getStocks();
         console.log(response)
-        setStocks(response?.data?.entity.map((stock) => ({ ...stock, name: stock.milkCategory.name, total: 0 })));
+        setStocks(response?.data?.entity.map((stock) => ({ ...stock, name: stock.milkCategory.name, total: parseFloat(stock.carryForward) + parseFloat(stock.eveningQuantity) + parseFloat(stock.morningQuantity)})));
     }
 
     useEffect(() => {
@@ -22,11 +22,8 @@ const Stock = () => {
     },[]);
 
     const onChange = (name, value, data) => {
-        const index = stocks.findIndex((stock) => stock.name == data.name );
-        const newStocks = [...stocks];
-        newStocks[index][name] = parseFloat(value);
-        newStocks[index].total = parseFloat(data.carryForward) + parseFloat(value) + parseFloat(name == 'morningQuantity' ? data.eveningQuantity : data.morningQuantity);
-        //setStocks(newStocks);
+        const total = parseFloat(data.carryForward) + parseFloat(value) + parseFloat(name == 'morningQuantity' ? data.eveningQuantity : data.morningQuantity);
+        document.getElementById(`total_${data.id}`).innerHTML = total;
     }
 
     const getRender = (name) => {
@@ -35,12 +32,23 @@ const Stock = () => {
                 render: (value, data) => {
                     return (
                         <Input
-                            onPressEnter={(e) => onChange(name, e.target.value, data)}
+                            onChange={(e) => onChange(name, e.target.value, data)}
                             defaultValue={value}
                             type='number'
                             key={uuid()}
                             id={`${name}_${data.id}`}
                         />
+                    )
+                }
+            }
+        }
+        if(name == 'total'){
+            return {
+                render: (value, data) => {
+                    return (
+                        <div className='font-bold' id={`total_${data.id}`}>
+                           {value}
+                        </div>
                     )
                 }
             }
@@ -64,6 +72,10 @@ const Stock = () => {
         {
             label: "Evening Quantity",
             name: 'eveningQuantity',
+        },
+        {
+            label: "Total",
+            name: 'total',
         },
     ];
     const columns = fieldData.map((column) => ({
