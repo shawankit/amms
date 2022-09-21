@@ -119,12 +119,12 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                         <>
                             <Col span={24}>
                                 <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
-                                { `Previous Due : ${customer?.previousDue}`}
+                                { `Previous Due : ${customer?.previousDue ? Math.round(customer?.previousDue) : 0}`}
                                 </Title>
                             </Col>
                             <Col span={24}>
                                 <Title level={4} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}}  >
-                                { `Due : ${ customer?.due >= 0 ? customer?.due - customer?.previousDue : 0 }`}
+                                { `Due : ${ customer?.due >= 0 ?  Math.round(customer?.due - customer?.previousDue) : 0 }`}
                                 </Title>
                             </Col>
                         </> : null
