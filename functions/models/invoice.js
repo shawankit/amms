@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Invoice.init({
+    companyId: DataTypes.UUID,
     invoiceNo: DataTypes.STRING,
     customerId: DataTypes.UUID,
     total: DataTypes.DOUBLE,

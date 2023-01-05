@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     mobile: DataTypes.STRING,
     due: DataTypes.DOUBLE,
+    companyId: DataTypes.UUID,
     previousDue: DataTypes.DOUBLE
   }, {
     sequelize,

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   PaymentReceipt.init({
+    companyId: DataTypes.UUID,
     customerId: DataTypes.UUID,
     amountReceived: DataTypes.DOUBLE
   }, {

@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   InvoiceConfig.init({
     prefix: DataTypes.STRING,
     suffix: DataTypes.STRING,
+    companyId: DataTypes.UUID,
     number: DataTypes.INTEGER
   }, {
     sequelize,

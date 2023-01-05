@@ -5,7 +5,7 @@ const firbaseConfig = functions.config();
 const configEnv = firbaseConfig.env;
 
 if (configEnv && configEnv.config) {
-    module.exports = require(`config/${configEnv.config}.json`);
+    module.exports = require(`config/dev.json`);
 } else {
     module.exports = config;
 }

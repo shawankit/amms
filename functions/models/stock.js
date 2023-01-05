@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID
     },
     categoryId: DataTypes.UUID,
+    companyId: DataTypes.UUID,
     morningQuantity: DataTypes.DOUBLE,
     eveningQuantity: DataTypes.DOUBLE,
     carryForward: DataTypes.DOUBLE

@@ -47,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     customerId: DataTypes.UUID,
     categoryId: DataTypes.UUID,
     gstRate: DataTypes.DOUBLE,
+    companyId: DataTypes.UUID,
     taxable: {
       type: DataTypes.ENUM,
       values: ['No', 'Yes'],

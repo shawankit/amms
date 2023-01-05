@@ -74,7 +74,7 @@ const Customer = () => {
     });
 
     return (
-        <div  style={{ height: 'calc(100vh - 150px)', overflowY :'auto'}}>
+        <div  style={{ height: 'calc(100vh - 50px)', overflowY :'auto'}}>
             <div className="site-layout-background p-5">
                 <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >{editData ? 'Edit' : 'Add'} Customer { editData ? `(${editData.name})`: '' }</Title>
                 <CustomerForm data={editData} callback={fetchCustomers} setEditData={setEditData}/>
