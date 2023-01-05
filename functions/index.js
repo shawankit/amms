@@ -25,7 +25,7 @@ app.use((req, res, next) => {
     next(err);
 });
 
-
+config.port = 8000;
 app.use((error, request, response, next) => {
     if (error.constructor === ApiError) {
         logError('Failed to execute the operation', error.error);
