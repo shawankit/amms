@@ -1,0 +1,1 @@
+INSERT INTO public.invoice_configs (id, prefix, suffix, number, created_at, updated_at) VALUES ('b066352c-aa32-41f9-a5da-dbfeb5e8daab', 'AMMS', null, 0, '2022-08-28 14:53:47.923000 +00:00', '2022-09-21 15:50:09.979000 +00:00');
