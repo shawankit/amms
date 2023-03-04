@@ -27,7 +27,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
     const fetchMilkCategories = async () => {
         const customerData = formData && formData.customerId && customerMap[formData.customerId]
         const response = await getAllMilkCategories(customerData && customerData.type == 'special' ? customerData.id : undefined);
-        const milkMap = response?.data?.entity?.reduce((previous, current) => ({...previous, [current.id]: current}), {});
+        const milkMap = response?.data?.entity?.rows.reduce((previous, current) => ({...previous, [current.id]: current}), {});
         setMilks(milkMap);
     }
 

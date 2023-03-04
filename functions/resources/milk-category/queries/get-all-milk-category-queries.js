@@ -1,15 +1,23 @@
 const { MilkCategory } = require("../../../models");
+const { Op } = require("sequelize");
 
 module.exports = class GetAllMilkCategoryQuery {
-    constructor(customerId){
-        this.details = {customerId}
+    constructor(customerId, search, offset, limit){
+        this.details = {customerId, search, offset, limit}
     }
 
     get(){
-        return MilkCategory.findAll({
-            where: {
-                customerId: this.details.customerId ? this.details.customerId : null
-            },
+        let condition = {
+            customerId: this.details.customerId ? this.details.customerId : null
+        };
+        if (this.details.search) {
+            condition = {
+                ...condition,
+                name: { [Op.iLike]: `%${this.details.search}%` }
+            };
+        }
+        return MilkCategory.findAndCountAll({
+            where: condition,
             include: [
                 {
                     model: MilkCategory,

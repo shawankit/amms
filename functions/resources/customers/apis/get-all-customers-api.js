@@ -8,10 +8,11 @@ const GetAllCustomerQuery = require('../queries/get-all-customers-queries');
 
 
 const get = async (req) => {
+    const { search, offset, limit } = req.query;
 
     logInfo('Request to fetch all customers',{});
 
-    const response = await db.find(new GetAllCustomerQuery());
+    const response = await db.find(new GetAllCustomerQuery( search, offset, limit ));
 
     return respond(response,'Successfully Fetched All customers', 'Failed to fetch customers')
 }

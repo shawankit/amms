@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import millify from 'millify';
-import { Typography, Row, Col, Statistic, Table, Button } from 'antd';
+import { Typography, Row, Col, Statistic, Table, Button, Input } from 'antd';
 import CustomerForm from './Forms/CustomerForm';
 import { deleteCustomer, getAllCustomers } from '../api';
 import CustomerData from '../data/CustomerData';
@@ -14,15 +14,21 @@ const Customer = () => {
     const [customers, setCustomrs] = useState(null);
     const [editData, setEditData] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [total, setTotal] = useState(0);
+
+    const [search, setSearch] = useState('');
+
     const fetchCustomers = async () => {
-        const response = await getAllCustomers();
-        setCustomrs(response?.data?.entity);
+        const response = await getAllCustomers(search, (currentPage - 1) * pageSize, pageSize);
+        setCustomrs(response?.data?.entity.rows);
+        setTotal(response?.data?.entity.count);
     }
 
     useEffect(() => {
         fetchCustomers();
-    },[]);
-
+      },[currentPage, pageSize, search]);
 
     const onEdit = (data) => {
         setEditData({...data})
@@ -73,21 +79,59 @@ const Customer = () => {
         },
     });
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+      };
+    
+      const handlePageSizeChange = (current, size) => {
+        setPageSize(size);
+        setCurrentPage(1);
+      };
+  
+    
+      const initpageSizeOptions = [10, 20, 50, 100];
+      const pageSizeOptions = [];
+      while(initpageSizeOptions.length > 0 && initpageSizeOptions[0] < total ){
+          pageSizeOptions.push(initpageSizeOptions[0] + '');
+          initpageSizeOptions.shift();
+      }
+      if(total > 10) pageSizeOptions.push( total + '');
+
     return (
-        <div  style={{ height: 'calc(100vh - 50px)', overflowY :'auto'}}>
+        <div  style={{ height: 'calc(100vh - 150px)', overflowY :'auto'}}>
             <div className="site-layout-background p-5">
                 <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >{editData ? 'Edit' : 'Add'} Customer { editData ? `(${editData.name})`: '' }</Title>
                 <CustomerForm data={editData} callback={fetchCustomers} setEditData={setEditData}/>
             </div>
             <div className="site-layout-background p-5 mt-1">
                 <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >Customers</Title>
+                <div className='mb-2'>
+                    <Row className="w-full">
+                        <Col span={12}>
+                            <Input
+                                placeholder="Search..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </Col>
+                    </Row>
+                </div>
                 <Row className="w-full">
                     <Col span={24}>
                         <Table
                             dataSource={customers} 
                             columns={columns}
                             bordered
-                            pagination={ {}}
+                            pagination={{ 
+                                position: ['bottomRight', 'topRight'], 
+                                pageSizeOptions,
+                                current: currentPage,
+                                pageSize: pageSize,
+                                onChange: handlePageChange,
+                                onShowSizeChange: handlePageSizeChange,
+                                total,
+                                showSizeChanger: true
+                             }}
                             rowKey={(record) => record.id + (new Date().getTime() + Math.random() * 10000)}
                         />
                     </Col>

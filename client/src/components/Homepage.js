@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import millify from 'millify';
-import { Typography, Row, Col, Statistic, Table, Button } from 'antd';
+import { Typography, Row, Col, Statistic, Table, Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { getAllMilkCategories, getCustomersWithDues, getInvoicesByDate } from '../api';
 import moment from 'moment';
@@ -20,6 +20,12 @@ const Homepage = () => {
     const [visible, setVisible] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [total, setTotal] = useState(0);
+
+    const [search, setSearch] = useState('');
+
     const fetchInvoices = async (date) => {
         const response = await getInvoicesByDate(date);
         console.log(response);
@@ -28,13 +34,14 @@ const Homepage = () => {
 
     const fetchMilkCategories = async () => {
       const response = await getAllMilkCategories();
-      setMilks(response?.data?.entity);
+      setMilks(response?.data?.entity.rows);
     }
 
     const fetchCustomers = async (date) => {
-      const response = await getCustomersWithDues();
+      const response = await getCustomersWithDues(search, (currentPage - 1) * pageSize, pageSize );
       console.log(response);
-      setCustomers(response?.data?.entity);
+      setCustomers(response?.data?.entity.rows);
+      setTotal(response?.data?.entity.count);
   }
 
     const onChangeReportDate = (e) => {
@@ -44,8 +51,11 @@ const Homepage = () => {
     useEffect(async () => {
         await fetchMilkCategories();
         await fetchInvoices(reportDate);
-        await fetchCustomers();
     },[reportDate]);
+
+    useEffect(() => {
+      fetchCustomers();
+    },[currentPage, pageSize, search]);
 
     const columns = milk.length > 0 ? [{
           title:  ( 
@@ -134,6 +144,25 @@ const Homepage = () => {
       setSelectedCustomer(customer)
       setVisible(true);
     }
+
+    const handlePageChange = (page) => {
+      setCurrentPage(page);
+    };
+  
+    const handlePageSizeChange = (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1);
+    };
+
+  
+    const initpageSizeOptions = [10, 20, 50, 100];
+    const pageSizeOptions = [];
+    while(initpageSizeOptions.length > 0 && initpageSizeOptions[0] < total ){
+        pageSizeOptions.push(initpageSizeOptions[0] + '');
+        initpageSizeOptions.shift();
+    }
+    if(total > 10) pageSizeOptions.push( total + '');
+
     return (
       <>
           <div  style={{ height: 'calc(100vh - 150px)', overflowY :'auto', overflowX: 'hidden'}}>
@@ -184,14 +213,33 @@ const Homepage = () => {
               <div style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >
                 <Title level={3} >All Customers</Title>
               </div>
-               
+              <div className='mb-2'>
+                    <Row className="w-full">
+                        <Col span={12}>
+                            <Input
+                                placeholder="Search..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </Col>
+                    </Row>
+                </div>
                 <Row className="w-full">
                     <Col span={24}>
                         <Table
                             dataSource={customers} 
                             columns={customerColumns}
                             bordered
-                            pagination={ {}}
+                            pagination={{ 
+                              position: ['bottomRight', 'topRight'], 
+                              pageSizeOptions,
+                              current: currentPage,
+                              pageSize: pageSize,
+                              onChange: handlePageChange,
+                              onShowSizeChange: handlePageSizeChange,
+                              total,
+                              showSizeChanger: true
+                           }}
                             rowKey={(record) => record.id + (new Date().getTime() + Math.random() * 10000)}
                         />
                     </Col>

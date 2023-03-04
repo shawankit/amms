@@ -9,11 +9,11 @@ const GetAllMilkCategoryQuery = require('../queries/get-all-milk-category-querie
 
 const get = async (req) => {
 
-    const { customerId } = req.query; 
+    const { customerId, search, offset, limit } = req.query; 
 
     logInfo('Request to fetch all milk-category',{});
 
-    const response = await db.find(new GetAllMilkCategoryQuery(customerId));
+    const response = await db.find(new GetAllMilkCategoryQuery(customerId, search, offset, limit));
 
     return respond(response,'Successfully Fetched All milk-category', 'Failed to fetch milk-category')
 }

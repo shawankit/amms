@@ -266,6 +266,7 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
         bordered
         dataSource={[...dataSource, totalRow]}
         columns={columns}
+        pagination={false}
       />
     </div>
   );

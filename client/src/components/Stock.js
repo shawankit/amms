@@ -22,7 +22,7 @@ const Stock = () => {
     },[]);
 
     const onChange = (name, value, data) => {
-        const total = parseFloat(data.carryForward) + parseFloat(value) + parseFloat(name == 'morningQuantity' ? data.eveningQuantity : data.morningQuantity);
+        const total = parseFloat(data.carryForward || 0 ) + parseFloat(value) + parseFloat(name == 'morningQuantity' ? data.eveningQuantity : data.morningQuantity);
         document.getElementById(`total_${data.id}`).innerHTML = total;
     }
 
