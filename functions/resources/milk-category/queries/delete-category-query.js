@@ -7,7 +7,12 @@ module.exports = class DeleteCategoryQuery {
         };
     }
 
-    get() {
+    async get() {
+        const deleted = await MilkCategory.destroy({
+            where: {
+                categoryId: this.details.categoryId
+            }
+        });
         return MilkCategory.destroy({
             where: {
                 id: this.details.categoryId

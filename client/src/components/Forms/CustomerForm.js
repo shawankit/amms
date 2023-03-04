@@ -69,7 +69,7 @@ const CustomerForm = ({ data , callback, setEditData}) => {
 
     return (
         <>
-            <div>
+            <div id='form-div'>
                 <Row>
                     { 
                         CustomerData.map((field) => field.type == 'input' ?

@@ -50,8 +50,15 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
             sweetalertValidate('Please insert atleast one item');
             return;
         }
+        
         if(formData.customerId == ''){
             sweetalertValidate('Please select customer');
+            return;
+        }
+
+        formData.transactions = formData.transactions.filter((transaction) => transaction.categoryId);
+        if(formData.transactions.length == 0){
+            sweetalertValidate('No Items selected');
             return;
         }
         formData.total = Math.round(formData.transactions.reduce((total,t) => total + (t.totalWithTax), 0));
@@ -86,7 +93,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
 
     return (
         <>
-            <div>
+            <div id='form-div'>
                 <Row>
                     <SelectField
                         label={'Customer'}

@@ -70,7 +70,7 @@ const MilkFom = ({ data , callback, setEditData}) => {
 
     return (
         <>
-            <div>
+            <div id='form-div'>
                 <Row>
                     { 
                         MilkData.map((field) => field.type == 'input' ?

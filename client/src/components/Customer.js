@@ -31,7 +31,8 @@ const Customer = () => {
       },[currentPage, pageSize, search]);
 
     const onEdit = (data) => {
-        setEditData({...data})
+        setEditData({...data});
+        setTimeout(() => document.getElementById('form-div').scrollIntoView(), 2);
     }
 
     const  onDelete = async (data) => {

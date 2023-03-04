@@ -177,32 +177,19 @@ const Homepage = () => {
             <div className="site-layout-background p-5 mt-1">
               <div style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >
                 <Title level={3} >Sales Report ({reportDate})</Title>
-                {/* <div className='absolute top-28 right-16 w-72 mt-2'>
-                  <Row>
-                    <InputField
-                          label={'Date'}
-                          type={'date'} 
-                          name={'reportDate'}
-                          onChange={onChangeReportDate}
-                          key={'invoiceDate'}
-                          value={reportDate}
-                          lcol={8}
-                          icol={16}
-                      /> 
-                  </Row>
-                </div> */}
+
                 
                 
               </div>
                
-                <Row className="w-full">
+                <Row className="w-full overflow-y-auto max-h-96" >
                     <Col span={24}>
                         <Table
                             dataSource={dataSource} 
                             columns={columns}
                             bordered
                             scroll={{ x: 1600 }}
-                            pagination={ {}}
+                            pagination={false}
                             rowKey={(record) => record.id + (new Date().getTime() + Math.random() * 10000)}
                         />
                     </Col>
