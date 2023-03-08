@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import millify from 'millify';
 import { Typography, Row, Col, Statistic, Table, Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
-import { getAllMilkCategories, getCustomersWithDues, getInvoicesByDate } from '../api';
+import { getAllMilkCategories, getCustomersWithDues, getInvoicesByDate, getStocksByDate } from '../api';
 import moment from 'moment';
-import InputField from './common/InputField';
 import PaymentModal from './Modal/PaymentModal';
 import { EditOutlined } from '@ant-design/icons';
+import { uuid } from '../util/util';
 
 const { Title } = Typography;
 
@@ -19,6 +19,7 @@ const Homepage = () => {
     const [customers, setCustomers] = useState([]);
     const [visible, setVisible] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [stocks, setStocks] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
@@ -43,6 +44,11 @@ const Homepage = () => {
       setCustomers(response?.data?.entity.rows);
       setTotal(response?.data?.entity.count);
   }
+    const getStocks = async (date) => {
+      const response = await getStocksByDate(date);
+      console.log(response);
+      setStocks(response?.data?.entity);
+    } 
 
     const onChangeReportDate = (e) => {
       setReportDate(e.target.value);
@@ -51,6 +57,7 @@ const Homepage = () => {
     useEffect(async () => {
         await fetchMilkCategories();
         await fetchInvoices(reportDate);
+        await getStocks(reportDate)
     },[reportDate]);
 
     useEffect(() => {
@@ -65,7 +72,8 @@ const Homepage = () => {
           ),
           dataIndex: 'customer',
           key: 'customer',
-          width: '150px'
+          width: '150px',
+          fixed: 'left',
       },
       ...(milk.map((ele) => ({
           title:  ( 
@@ -77,6 +85,13 @@ const Homepage = () => {
           key: ele.id,
           width: '150px'
         })))] : [];
+
+
+    const totalStocksMap = stocks.reduce((acc, ele) => ({ ...acc, [ele.categoryId]: ele.carryForward + ele.morningQuantity + ele.eveningQuantity }), {});
+    const totalSoldStockMap = {};
+    for(let i = 0; i < milk.length ; i++){
+      totalSoldStockMap[milk[i].id] = 0;
+    }
 
     const dataSource = invoices.map((customer) => {
       const data = {
@@ -94,11 +109,27 @@ const Homepage = () => {
             data[catId] = 0;
           }
           data[catId] += milkCategory[j].Transaction.quantity;
+          totalSoldStockMap[catId] += milkCategory[j].Transaction.quantity;
         }
       }
       return data;
     });
 
+    const totalDataSource = [{
+      id: uuid(),
+      customer: 'Total Stock',
+      ...totalStocksMap
+    },
+    {
+      id: uuid(),
+      customer: 'Total Sold',
+      ...totalSoldStockMap
+    },
+    {
+      id: uuid(),
+      customer: 'Total Remaining',
+      ...Object.keys(totalStocksMap).reduce((acc, ele) => ({ ...acc, [ele]: totalStocksMap[ele] - totalSoldStockMap[ele] }), {})
+    }]
     const customerColumns = [{
       title:  ( 
           <Typography.Text ellipsis={true} title={'Customers'}>
@@ -175,22 +206,47 @@ const Homepage = () => {
                   <Col span={4}><Statistic title="Total New Customers Added" value={millify( 0)}/></Col>
             </Row>
             <div className="site-layout-background p-5 mt-1">
-              <div style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >
-                <Title level={3} >Sales Report ({reportDate})</Title>
-
+              <div style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='flex border-b-2' >
+                <Title level={3} >Sales Report {/*moment(reportDate).format('DD-MM-YYYY')*/}</Title>
+                <div className=''>
+                  <Row>
+                    <Input
+                        type={'date'} 
+                        name={'reportDate'}
+                        onChange={onChangeReportDate}
+                        key={'invoiceDate'}
+                        value={reportDate}
+                        className='ml-2'
+                      /> 
+                  </Row>
+                </div>
                 
                 
               </div>
                
-                <Row className="w-full overflow-y-auto max-h-96" >
+                <Row className="w-full overflow-y-auto " >
                     <Col span={24}>
                         <Table
                             dataSource={dataSource} 
                             columns={columns}
                             bordered
-                            scroll={{ x: 1600 }}
+                            scroll={{ x: 1600, y: 384 }}
                             pagination={false}
                             rowKey={(record) => record.id + (new Date().getTime() + Math.random() * 10000)}
+                        />
+                    </Col>
+                </Row>
+
+                <Row className="w-full overflow-y-auto " >
+                    <Col span={24}>
+                        <Table
+                            dataSource={totalDataSource} 
+                            columns={columns}
+                            bordered
+                            scroll={{ x: 1600}}
+                            pagination={false}
+                            rowKey={(record) => record.id + (new Date().getTime() + Math.random() * 10000)}
+                            showHeader={false}
                         />
                     </Col>
                 </Row> 

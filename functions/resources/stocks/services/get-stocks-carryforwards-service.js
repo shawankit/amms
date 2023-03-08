@@ -35,7 +35,7 @@ module.exports.perform = async () => {
         (sales) =>composeResult(
             (milks) => composeResult(
                 (stocks) => {
-                    const milkList = subtractStocksFromMilk(milks, stocks);
+                    const milkList = subtractStocksFromMilk(milks.rows, stocks);
                     if(milkList.length > 0){
                         return db.execute(new CreateBulkStocksQuery(milkList.map((milk) => ({
                             id: uuid.v4(), 

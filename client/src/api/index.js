@@ -46,4 +46,5 @@ export const createPayments = (customerId, payment) => API.post(`/customers/${cu
 
 export const createStocks = (stocks) => API.post("/stocks", { stocks });
 export const getStocks = () => API.get("/stocks");
+export const getStocksByDate = (date) => API.get(`/stocks-by-date?date=${date}`);
 
