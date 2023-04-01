@@ -53,11 +53,28 @@ const Homepage = () => {
     const onChangeReportDate = (e) => {
       setReportDate(e.target.value);
     }
-
+    
+    let myTimeout;
     useEffect(async () => {
         await fetchMilkCategories();
         await fetchInvoices(reportDate);
-        await getStocks(reportDate)
+        await getStocks(reportDate);
+
+        if(myTimeout) clearTimeout(myTimeout);
+        myTimeout = setTimeout(() => {
+
+          const scrollableElement = document.querySelector('#total-table > div > div > div > div > div > div > div');
+          const targetElement = document.querySelector('#report-table > div > div > div > div > div > div > div.ant-table-body');
+    
+          scrollableElement.addEventListener('scroll', () => {
+            const scrollPosition = scrollableElement.scrollLeft;
+    
+            targetElement.scrollLeft = scrollPosition;
+          });
+    
+        }, 1000);
+
+        
     },[reportDate]);
 
     useEffect(() => {
@@ -224,7 +241,7 @@ const Homepage = () => {
                 
               </div>
                
-                <Row className="w-full overflow-y-auto " >
+                <Row className="w-full overflow-y-auto " id='report-table'>
                     <Col span={24}>
                         <Table
                             dataSource={dataSource} 
@@ -237,7 +254,7 @@ const Homepage = () => {
                     </Col>
                 </Row>
 
-                <Row className="w-full overflow-y-auto " >
+                <Row className="w-full overflow-y-auto " id="total-table">
                     <Col span={24}>
                         <Table
                             dataSource={totalDataSource} 

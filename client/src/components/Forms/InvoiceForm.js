@@ -10,7 +10,7 @@ import moment from 'moment';
 import { sweetalertValidate } from '../../util/util';
 
 
-const InvoiceForm = ({ data, customers , callback, setEditData}) => {
+const InvoiceForm = ({ data, type, customers , callback, setEditData}) => {
     const initialData = { 
         invoiceNo:'' ,
         customerId: '' , 
@@ -63,6 +63,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
         }
         formData.total = Math.round(formData.transactions.reduce((total,t) => total + (t.totalWithTax), 0));
         formData.existingUser = !!customerMap[formData.customerId];
+        formData.type = type;
     
         let response = await createInvoice(formData);
         console.log(response);
@@ -137,7 +138,7 @@ const InvoiceForm = ({ data, customers , callback, setEditData}) => {
                             Reset
                         </Button>
                         <Button type="primary" onClick={() => onSubmit()} icon={ <PlusOutlined />} >
-                            { 'Generate Invoice' } 
+                            Generate { type == 'sale' ? 'Invoice' : 'Purchase'}
                         </Button>
                     </Col>
                 

@@ -4,22 +4,25 @@ import { Typography, Row, Col, Statistic, Table, Button, Input } from 'antd';
 import { createStocks, getStocks } from '../api';
 import { SaveOutlined } from '@ant-design/icons';
 import { sweetalertMessage, sweetalertValidate, uuid } from '../util/util';
+import moment from 'moment';
 
 const { Title } = Typography;
 
 const Stock = () => {
 
     const [stocks, setStocks] = useState([]);
+    const [reportDate, setReportDate] = useState(moment().format('YYYY-MM-DD'))
 
     const fetchStocks = async () => {
-        const response = await getStocks();
+        console.log(reportDate, 'reportDate');
+        const response = await getStocks(reportDate);
         console.log(response)
         setStocks(response?.data?.entity.map((stock) => ({ ...stock, name: stock.milkCategory.name, total: parseFloat(stock.carryForward) + parseFloat(stock.eveningQuantity) + parseFloat(stock.morningQuantity)})));
     }
 
     useEffect(() => {
         fetchStocks();
-    },[]);
+    },[reportDate]);
 
     const onChange = (name, value, data) => {
         const total = parseFloat(data.carryForward || 0 ) + parseFloat(value) + parseFloat(name == 'morningQuantity' ? data.eveningQuantity : data.morningQuantity);
@@ -110,15 +113,35 @@ const Stock = () => {
         }
     }
 
+    const onChangeDate = (e) => {
+        setReportDate(e.target.value);
+      }
+
     return (
         <>
             <div className="site-layout-background p-5 mt-1">
                 <Row>
                     <Col span={12}>
-                        <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >Today's Stocks</Title>
+                        <div style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='flex border-b-2' >
+                            <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >
+                                { reportDate === moment().format('YYYY-MM-DD') ? "Today's Stocks" : "Stocks" }
+                            </Title>
+                            <div className=''>
+                                <Row>
+                                    <Input
+                                        type={'date'} 
+                                        name={'reportDate'}
+                                        onChange={onChangeDate}
+                                        key={'invoiceDate'}
+                                        value={reportDate}
+                                        className='ml-2'
+                                    /> 
+                                </Row>
+                            </div>
+                        </div>
                     </Col>
                     <Col span={12}>
-                        <Button type="primary" className='float-right' icon={ <SaveOutlined /> } onClick={onSave}> Save </Button>
+                        { reportDate === moment().format('YYYY-MM-DD') && <Button type="primary" className='float-right' icon={ <SaveOutlined /> } onClick={onSave}> Save </Button> }
                     </Col>
                 </Row>
                

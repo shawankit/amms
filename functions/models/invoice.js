@@ -28,7 +28,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     amountPaid: DataTypes.INTEGER,
     paymentDate: DataTypes.DATE,
-    invoiceDate: DataTypes.DATE
+    invoiceDate: DataTypes.DATE,
+    type: {
+      type: DataTypes.ENUM,
+      values: ['sale', 'purchase'],
+      defaultValue: 'sale'
+    }
   }, {
     sequelize,
     modelName: 'Invoice',

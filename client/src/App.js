@@ -8,6 +8,7 @@ import { Customer, Homepage, Navbar, MilkCategory } from './components';
 import { MailOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import Invoices from './components/Invoices';
 import Stock from './components/Stock';
+import ListComponent from './components/ListComponent';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -51,10 +52,16 @@ const App = () => {
                 <MilkCategory />
               </Route>
               <Route exact path="/invoices">
-                <Invoices />
+                <Invoices type={'sale'}/>
               </Route>
               <Route exact path="/stocks">
                 <Stock />
+              </Route>
+              <Route exact path="/payments">
+                <ListComponent page={'payment-receipts'} reload={false} noaction={true}/>
+              </Route>
+              <Route exact path="/purchases">
+                <Invoices type={'purchase'}/>
               </Route>
             </Switch>
           </div>

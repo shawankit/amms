@@ -63,6 +63,8 @@ process.on('uncaughtException', (error) => {
     logError('uncaughtException', { error });
 });
 
+require('./crons/create-stocks-everyday-cron-job').start();
+
 console.log(config.port);
 server.listen(config.port, () => {
     console.log(`Express server listening on port ${config.port}`);

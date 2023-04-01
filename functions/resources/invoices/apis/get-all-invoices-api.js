@@ -11,14 +11,14 @@ const GetInvoicesByDateQuery = require('../queries/get-invoices-by-date-query ')
 
 const get = async (req) => {
 
-    const { search, offset, limit, date } = req.query;
+    const { search, offset, limit, date, type } = req.query;
 
 
     logInfo('Request to fetch all ivoices',{});
 
     const response = await R.ifElse(
         () => R.isNil(date),
-        () => db.find(new GetAllInvoiceQuery(search, offset, limit)),
+        () => db.find(new GetAllInvoiceQuery(search, offset, limit, type)),
         () => db.find(new GetInvoicesByDateQuery(date))
     )();
     

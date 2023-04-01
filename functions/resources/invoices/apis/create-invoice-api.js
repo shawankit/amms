@@ -17,7 +17,7 @@ const CreateCustomerQuery = require('../../customers/queries/create-customer-que
 const getInvoiceNumber = (ic) => `${ic.prefix ? `${ic.prefix}/` : ''}${ic.number}${ic.suffix ? `/${ic.suffix}` : ''}`
 
 const post = async (req) => {
-    const { customerId , total, transactions, invoiceDate, existingUser }
+    const { customerId , total, transactions, invoiceDate, existingUser, type }
      = req.body;
 
     logInfo('Request to create invoices',{ customerId , total, transactions, invoiceDate });
@@ -32,7 +32,7 @@ const post = async (req) => {
         (customer) => customer.due < 0 ? SettleDueInvoicesServices.perform({ OriginalCustomerId , amountReceived: -1 * customer.due}) : Result.Ok({}), 
         () => db.execute(new GetCustomerByIdQuery(OriginalCustomerId)),
         () => db.create(new CreateBulkTransactionQuery(transactions.map((transaction) => ({ ...transaction, id: uuid.v4(), OriginalCustomerId, invoiceId })))),
-        (ic) => db.execute(new CreateInvoiceQuery(invoiceId,getInvoiceNumber(ic),OriginalCustomerId, total, invoiceDate)),
+        (ic) => db.execute(new CreateInvoiceQuery(invoiceId,getInvoiceNumber(ic),OriginalCustomerId, total, invoiceDate, type)),
         () => db.execute(new UpdateInvoiceConfigQuery()),
         async () => !existingUser ? db.execute(new CreateCustomerQuery(OriginalCustomerId, customerId,'normal', '')) : Result.Ok({})
     )();

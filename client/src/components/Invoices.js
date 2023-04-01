@@ -13,7 +13,7 @@ import { sweetalertMessage, sweetalertValidate } from '../util/util';
 
 const { Title } = Typography;
 
-const Invoices = () => {
+const Invoices = ({ type }) => {
 
     const [customers, setCustomers] = useState(null);
     const [invoices, setInvoices] = useState(null);
@@ -34,7 +34,7 @@ const Invoices = () => {
     }
 
     const fetchInvoices = async () => {
-        const response = await getAllInvoices(search, (currentPage - 1) * pageSize, pageSize);
+        const response = await getAllInvoices(type, search, (currentPage - 1) * pageSize, pageSize);
         setInvoices(response?.data?.entity.rows.map((inv) => ({
             ...inv,
             customerName: inv.customer.name,
@@ -50,7 +50,7 @@ const Invoices = () => {
 
     useEffect(() => {
         fetchInvoices();
-      },[currentPage, pageSize, search]);
+      },[currentPage, pageSize, search, type]);
 
     const openInvoiceDetail = (invoiceId) => {
         setSelectedInvoiceId(invoiceId);
@@ -139,9 +139,10 @@ const Invoices = () => {
     return (
         <div  style={{ height: 'calc(100vh - 150px)', overflowY :'auto'}}>
             <div className="site-layout-background p-5">
-                <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >Generate Invoice </Title>
+                <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >Generate { type == 'sale' ? 'Invoice' : 'Purchase'} </Title>
                 <InvoiceForm 
                     customers={customers} 
+                    type={type}
                     callback={async (customerId, customerData) => {
                         await fetchInvoices();
                         setSelectedCustomer(customerData)
@@ -149,7 +150,7 @@ const Invoices = () => {
                     }}/>
             </div>
             <div className="site-layout-background p-5 mt-1">
-                <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >Invoices</Title>
+                <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >{ type == 'sale' ? 'Invoices' : 'Purchases'}</Title>
                 <div className='mb-2'>
                     <Row className="w-full">
                         <Col span={12}>
