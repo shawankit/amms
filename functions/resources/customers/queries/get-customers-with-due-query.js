@@ -2,14 +2,19 @@ const { Op } = require("sequelize");
 const { Customer } = require("../../../models");
 
 module.exports = class GetCustomersWithDueQuery {
-    constructor(search, offset = 0, limit){
-        this.details = { search, offset, limit }
+    constructor(search, offset = 0, limit, isVendor = false){
+        this.details = { search, offset, limit, isVendor }
     }
 
     get(){
-        let condition = {};
+        let condition = {
+            where: {
+                isVendor: this.details.isVendor,
+            }
+        };
         if (this.details.search) {
             condition.where = {
+                ...condition.where,
                 name: { [Op.iLike]: `%${this.details.search}%` }
             };
         }

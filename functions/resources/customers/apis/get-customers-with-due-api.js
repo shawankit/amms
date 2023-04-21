@@ -9,11 +9,11 @@ const GetCustomersWithDueQuery = require('../queries/get-customers-with-due-quer
 
 const get = async (req) => {
 
-    const { search, offset, limit } = req.query;
+    const { search, offset, limit, isVendor } = req.query;
 
     logInfo('Request to fetch all customers',{});
 
-    const response = await db.find(new GetCustomersWithDueQuery(search, offset, limit));
+    const response = await db.find(new GetCustomersWithDueQuery(search, offset, limit, isVendor));
 
     return respond(response,'Successfully Fetched All customers with dues', 'Failed to fetch customers with dues')
 }

@@ -51,7 +51,8 @@ module.exports = (sequelize, DataTypes) => {
     taxable: {
       type: DataTypes.ENUM,
       values: ['No', 'Yes'],
-    }
+    },
+    hsn: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'MilkCategory',

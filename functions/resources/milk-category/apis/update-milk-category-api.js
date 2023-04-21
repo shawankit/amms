@@ -10,12 +10,12 @@ const UpdateMilkCategoryQuery = require('../queries/update-milk-category-query')
 const post = async (req) => {
 
     const { id } = req.params; 
-    const { name , rate, taxable, gstRate}
+    const { name , rate, taxable, gstRate, hsn}
      = req.body;
 
     logInfo('Request to update milk category',name);
 
-    const response = await db.execute(new UpdateMilkCategoryQuery(id,name,rate, taxable, gstRate));
+    const response = await db.execute(new UpdateMilkCategoryQuery(id,name,rate, taxable, gstRate, hsn));
 
     return respond(response,'Successfully Updated Milk Category', 'Failed to update Milk Category')
 }

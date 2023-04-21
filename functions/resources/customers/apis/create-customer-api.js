@@ -9,7 +9,7 @@ const CreateCustomerQuery = require('../queries/create-customer-query');
 const CreateBulkMilkCategoryQuery = require('../../milk-category/queries/create-bulk-milk-category-query');
 
 const post = async (req) => {
-    const { name , type, mobile, rates}
+    const { name , type, mobile, rates, isVendor }
      = req.body;
 
     logInfo('Request to create customer',name);
@@ -25,7 +25,7 @@ const post = async (req) => {
             )(),
             () => Result.Ok(customer)
         )(),
-        () => db.execute(new CreateCustomerQuery(id,name,type, mobile))
+        () => db.execute(new CreateCustomerQuery(id,name,type, mobile, isVendor))
     )();
 
     return respond(response,'Successfully Created Customer', 'Failed to create customer')

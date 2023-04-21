@@ -29,7 +29,7 @@ const Invoices = ({ type }) => {
     const [search, setSearch] = useState('');
 
     const fetchCustomers = async () => {
-        const response = await getAllCustomers();
+        const response = await getAllCustomers(undefined, 0, undefined, type === 'purchase');
         setCustomers(response?.data?.entity.rows);
     }
 
@@ -61,7 +61,6 @@ const Invoices = ({ type }) => {
         if(column.name == 'invoiceNo'){
             return {
                 render: (invoiceNo, data) => {
-                    console.log('data', data)
                     return (
                         <div>
                             <a onClick={() => openInvoiceDetail(data.id)} className='underline text-blue-900'>
@@ -93,7 +92,7 @@ const Invoices = ({ type }) => {
     const columns = fieldData.map((column) => ({
         title:  ( 
             <Typography.Text ellipsis={true} title={column.label}>
-                {column.label}
+                {column.label == 'Customer' && type === 'purchase' ? 'Vendor' : column.label}
             </Typography.Text>
         ),
         dataIndex: column.name,

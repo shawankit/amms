@@ -30,7 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     mobile: DataTypes.STRING,
     due: DataTypes.DOUBLE,
     companyId: DataTypes.UUID,
-    previousDue: DataTypes.DOUBLE
+    previousDue: DataTypes.DOUBLE,
+    isVendor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
   }, {
     sequelize,
     modelName: 'Customer',

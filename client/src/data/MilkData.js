@@ -26,6 +26,12 @@ const MilkData = [
         inputType: 'number',
         list: 'gstRate',
         defaultValue: 0
+    },
+    {
+        label : "HSN",
+        name: 'hsn',
+        type: 'input',
+        inputType: 'text'
     }
 ];
 

@@ -66,7 +66,6 @@ const InvoiceForm = ({ data, type, customers , callback, setEditData}) => {
         formData.type = type;
     
         let response = await createInvoice(formData);
-        console.log(response);
         if(response?.data?.status == true){
             swal("Succesfully generated invoice details", "success");
             reset();    
@@ -97,7 +96,7 @@ const InvoiceForm = ({ data, type, customers , callback, setEditData}) => {
             <div id='form-div'>
                 <Row>
                     <SelectField
-                        label={'Customer'}
+                        label={type === 'sale' ? 'Customer' : 'Vendor'}
                         option={customers ? [...customers.map((item) => ({ value: item.id, text: item.name})), ...newCustomers] : [...newCustomers]}
                         showSearch
                         optionFilterProp="children"

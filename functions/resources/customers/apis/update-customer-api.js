@@ -11,7 +11,7 @@ const CreateBulkMilkCategoryQuery = require('../../milk-category/queries/create-
 const post = async (req) => {
 
     const { id } = req.params; 
-    const { name , type, mobile , rates}
+    const { name , type, mobile , rates, isVendor}
      = req.body;
 
     logInfo('Request to update customer',name);
@@ -25,7 +25,7 @@ const post = async (req) => {
             )(),
             () => Result.Ok(customer)
         )(),
-        () => db.execute(new UpdateCustomerQuery(id,name,type, mobile))
+        () => db.execute(new UpdateCustomerQuery(id,name,type, mobile, isVendor))
     )();
 
     return respond(response,'Successfully Updated Customer', 'Failed to update customer')

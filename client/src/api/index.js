@@ -24,7 +24,7 @@ const UrlParamsReplace = (url, params = {}, queryParams = {}) => {
     return urlWithPrefix;
   };
 
-export const getAllCustomers = (search, offset, limit) => API.get(UrlParamsReplace(`/customers`, {}, { search, offset, limit }));
+export const getAllCustomers = (search, offset, limit, isVendor = false) => API.get(UrlParamsReplace(`/customers`, {}, { search, offset, limit, isVendor }));
 export const getCustomersWithDues = (search, offset, limit) => API.get(UrlParamsReplace(`/customers/dues`, {}, { search, offset, limit }));
 export const createCustomer = (customer) => API.post("/customers", customer);
 export const updateCustomer = (id, customer) => API.put(`/customers/${id}`, customer);

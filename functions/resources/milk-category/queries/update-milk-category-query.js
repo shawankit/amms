@@ -2,13 +2,14 @@ const { MilkCategory } = require("../../../models");
 
 
 module.exports = class UpdateMilkCategoryQuery {
-    constructor(id,name,rate, taxable,gstRate){
+    constructor(id,name,rate, taxable,gstRate, hsn){
         this.details = {
             id,
             name,
             rate,
             taxable,
-            gstRate
+            gstRate,
+            hsn
         }
     }
 
@@ -23,6 +24,7 @@ module.exports = class UpdateMilkCategoryQuery {
         milkCategory.rate = this.details.rate;
         milkCategory.taxable = this.details.taxable;
         milkCategory.gstRate = this.details.gstRate;
+        milkCategory.hsn = this.details.hsn;
 
         return milkCategory.save();
     }

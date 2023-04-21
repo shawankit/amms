@@ -1,17 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Form, Input, Popconfirm, Select, Table } from 'antd';
-import { getAllMilkCategories } from '../../api';
+import { uuid } from '../../util/util';
 
-const EditableContext = React.createContext(null);
-
+const moveFocusToNextInput = (e) => {
+    
+}
 const EditableRow = ({ index, ...props }) => {
-  const [form] = Form.useForm();
   return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
         <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
   );
 };
 
@@ -24,64 +20,61 @@ const EditableCell = ({
   handleSave,
   customerData,
   milk,
+  handleAdd,
   ...restProps
 }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef(null);
-    const form = useContext(EditableContext);
-    
-    useEffect(() => {
-        if (editing) {
-            inputRef.current.focus();
-        }
-    }, [editing]);
-
-    const toggleEdit = () => {
-        // setEditing(!editing);
-        form.setFieldsValue({
-        [dataIndex]: record[dataIndex],
-        });
-    };
-
 
   const onSave = (name, value) => {
     let newValues = {};
     if( dataIndex === 'categoryName'){
         const gstRate = customerData.type == 'special' ? milk[value].normal.gstRate : milk[value].gstRate;
-        newValues = { categoryName: milk[value].name, categoryId: value, rate: milk[value].rate, gstRate };
+        newValues = { categoryName: milk[value].name, categoryId: value, rate: milk[value].rate, gstRate, hsnCode: milk[value].hsn };
         if(record.quantity != undefined){
           newValues.total = Math.round(parseFloat(newValues.rate) * parseFloat(record.quantity) * 10) / 10;
           newValues.totalWithTax = Math.round((newValues.total + (newValues.total * newValues.gstRate) / 100) * 10) / 10;
         }
     }
 
-    if(dataIndex == 'quantity' && record.rate != undefined){
+    if(dataIndex == 'quantity' ){
       newValues = { quantity: value };
-      newValues.total =  Math.round(parseFloat(record.rate) * parseFloat(value) * 10) / 10;
-      newValues.totalWithTax = Math.round((newValues.total + (newValues.total * record.gstRate) / 100) * 10) / 10 ;
+      if(record.rate != undefined){
+        newValues.total =  Math.round(parseFloat(record.rate) * parseFloat(value) * 10) / 10;
+        newValues.totalWithTax = Math.round((newValues.total + (newValues.total * record.gstRate) / 100) * 10) / 10 ;
+      }
+      
+    }
+
+    if(dataIndex == 'rate'){
+      newValues = { rate: value };
+      if(record.quantity != undefined){
+        newValues.total =  Math.round(parseFloat(value) * parseFloat(record.quantity) * 10) / 10;
+        newValues.totalWithTax = Math.round((newValues.total + (newValues.total * record.gstRate) / 100) * 10) / 10 ;
+      }
     }
 
     handleSave({ ...record, ...newValues });
-  }
-
+  };
     let childNode = children;
 
     if (editable) {
         //childNode = editing ? (
-        childNode = record.categoryName != 'Total Amount' ?  ( <Form.Item
-            style={{
-            margin: 0,
-            }}
-            name={dataIndex}
-            rules={[
-            {
-                required: true,
-                message: `${title} is required.`,
-            },
-            ]}
-        >
+        childNode = record.categoryName != 'Total Amount' ?  ( <>
             { dataIndex !== 'categoryName' ? 
-                <Input onChange={(e) => onSave(dataIndex, e.target.value)} /> :
+                <Input 
+                  type='number' 
+                  className="w-full" 
+                  onChange={(e) => onSave(dataIndex, e.target.value)} 
+                  value={record[dataIndex]}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && dataIndex === 'quantity') {
+                      handleAdd();
+                      setTimeout(() => {
+                        e.target.parentElement.parentElement.nextSibling.children[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].focus();
+                      }, 10)
+                      
+                    }
+                  }}
+                /> :
                 <Select
                     label={'Customer'}
                     editable
@@ -96,11 +89,12 @@ const EditableCell = ({
                         optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
                     }
                     key={'customerId'}
+                    className="w-full"
                 >
                     { Object.values(milk).map((ele,index) => <Option value={ele.id} key={index}>{ele.name}</Option>) }
                 </Select>
             }
-        </Form.Item>
+        </>
         ) : (
         <div
             className="editable-cell-value-wrap font-bold"
@@ -119,15 +113,16 @@ const EditableCell = ({
 
 const EditableTable = ({ setTransactions, customerData, transactions, milk, notEditable }) => {
   const [dataSource, setDataSource] = useState([]);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setDataSource(transactions);
+    setDataSource(transactions || []);
   },[transactions])
 
   const handleDelete = (key) => {
     const newData = dataSource.filter((item) => item.key !== key);
+    // console.log('handleDelete', newData);
     setDataSource(newData);
+    setTransactions(newData);
   };
 
   const defaultColumns = [
@@ -138,9 +133,15 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
       editable: !notEditable
     },
     {
+      title: 'HSN Code',
+      dataIndex: 'hsnCode',
+      width: '10%'
+    },
+    {
       title: 'Rate',
       dataIndex: 'rate',
       width: '10%',
+      editable: !notEditable
     },
     {
       title: 'Quantity',
@@ -181,16 +182,16 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
 
   const handleAdd = () => {
     const newData = {
-      key: count,
+      key: uuid(),
       categoryName: `Select Item`,
-      rate: '0',
-      quantity: `0`,
+      rate: 0,
+      quantity: 0,
       total: 0,
       gstRate: 0,
-      totalWithTax: 0
+      totalWithTax: 0,
+      hsnCode: ''
     };
     setDataSource([...dataSource, newData]);
-    setCount(count + 1);
   };
 
   const handleSave = (row) => {
@@ -198,7 +199,6 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    setDataSource(newData);
     setTransactions(newData);
   };
 
@@ -237,6 +237,7 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
             handleSave,
             customerData,
             milk,
+            handleAdd,
             ...__
           })
         },
@@ -244,7 +245,7 @@ const EditableTable = ({ setTransactions, customerData, transactions, milk, notE
   });
 
   const totalRow = {
-    key: count + 2,
+    key: uuid(),
     categoryName: `Total Amount`,
     totalWithTax: Math.round(dataSource.reduce((total, current) => total + current.totalWithTax, 0))
   }

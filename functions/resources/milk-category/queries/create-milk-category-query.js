@@ -2,13 +2,14 @@ const { MilkCategory } = require("../../../models");
 
 
 module.exports = class CreateMilkCategoryQuery {
-    constructor(id,name,rate,taxable, gstRate){
+    constructor(id,name,rate,taxable, gstRate, hsn){
         this.details = {
             id,
             name,
             rate,
             taxable,
-            gstRate
+            gstRate, 
+            hsn
         }
     }
 

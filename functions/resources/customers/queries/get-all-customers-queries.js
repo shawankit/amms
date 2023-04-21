@@ -2,19 +2,22 @@ const { Customer } = require("../../../models");
 const { Op } = require("sequelize");
 
 module.exports = class GetAllCustomerQuery {
-    constructor( search, offset = 0, limit ){
-        this.details = {  search, offset, limit }
+    constructor( search, offset = 0, limit, isVendor = false ){
+        this.details = {  search, offset, limit, isVendor }
     }
 
     get(){
-        let condition = {};
+        let condition = {
+            isVendor: this.details.isVendor,
+        };
         if (this.details.search) {
-            condition.where = {
+            condition = {
+                ...condition,
                 name: { [Op.iLike]: `%${this.details.search}%` }
             };
         }
         return Customer.findAndCountAll({
-            ...condition,
+            where: condition,
             offset: this.details.offset,
             limit: this.details.limit,
             distinct: true,

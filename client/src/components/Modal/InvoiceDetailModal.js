@@ -25,6 +25,7 @@ const InvoiceDetailsModal = ({ visible , setVisible , invoiceId }) => {
                 quantity: element.Transaction.quantity,
                 total: element.Transaction.rate * element.Transaction.quantity,
                 gstRate: element.gstRate,
+                hsnCode: element.hsn,
                 totalWithTax: Math.round((total + (total * element.gstRate) / 100) * 10) / 10
             })
         })
