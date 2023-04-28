@@ -11,6 +11,11 @@ const PaymentReceiptData = [
         type: 'input',
         inputType: 'date'
     },
+    {
+        label : "Payment Mode",
+        name: 'paymentMode',
+        type: 'select',
+    },
    
     {
         label : "Amout Received",

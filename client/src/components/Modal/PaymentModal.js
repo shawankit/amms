@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Row, Col, Table, Typography } from 'antd';
+import { Modal, Button, Row, Col, Table, Typography, Select } from 'antd';
 import InputField from '../common/InputField';
 import { createPayments, getDueInvoices } from '../../api'; 
 import moment from 'moment';
 import swal from 'sweetalert';
 import InvoiceData from '../../data/InvoiceData';
 import { sweetalertOkCancel, sweetalertSuccess, sweetalertValidate } from '../../util/util';
+import SelectField from '../common/SelectField';
 
 const { Title } = Typography;
 
@@ -13,7 +14,14 @@ const { Title } = Typography;
 const PaymentModal = ({ visible , setVisible , customer , callback}) => {
     const initialData = {
         amountReceived: 0,
-        additionalDue: 0
+        additionalDue: 0,
+        paymentMode: 'CASH',
+        paymentModeDetails: {
+            upiId: '',
+            cardNumber: '',
+            cardHolderName: '',
+            cardExpiry: ''
+        }
     };
     const [formData, setFormData] = useState(initialData);
     const [invoices, setInvoices] = useState([]);
@@ -156,6 +164,73 @@ const PaymentModal = ({ visible , setVisible , customer , callback}) => {
                         lcol={8}
                         icol={16}
                     />
+                    <SelectField 
+                        label={'Payment Mode'}
+                        name={'paymentMode'}
+                        onChange={(value) => {
+                            setFormData({...formData, paymentMode: value})
+                        }}
+                        key={'paymentMode'}
+                        value={formData['paymentMode']}
+                        lcol={8}
+                        icol={16}
+                        option={[
+                            {text: 'CASH', value: 'CASH'},
+                            {text: 'UPI', value: 'UPI'},
+                            {text: 'CREDIT CARD', value: 'CREDIT CARD'},
+                            {text: 'DEBIT CARD', value: 'DEBIT CARD'}
+                        ]}
+                    />
+                    { formData['paymentMode'] === 'UPI' ? 
+                        <InputField
+                            label={'UPI ID'}
+                            type={'text'}
+                            name={'upiId'}
+                            onChange={(e) => setFormData({...formData, paymentModeDetails: {...formData.paymentModeDetails, upiId: e.target.value}})}
+                            key={'upiId'}
+                            value={formData.paymentModeDetails['upiId']}
+                            lcol={8}
+                            icol={16}
+                        /> : null
+                    }
+                    { formData['paymentMode'] === 'CREDIT CARD' || formData['paymentMode'] === 'DEBIT CARD' ?
+                        <>  
+                            <InputField
+                                label={'Card Number'}
+                                type={'text'}
+                                name={'cardNumber'}
+                                onChange={(e) => setFormData({...formData, paymentModeDetails: {...formData.paymentModeDetails, cardNumber: e.target.value}})}
+                                key={'cardNumber'}
+                                value={formData.paymentModeDetails['cardNumber']}
+                                lcol={8}
+                                icol={16}
+                            />
+                            <InputField
+                                label={'Card Holder Name'}
+                                type={'text'}
+                                name={'cardHolderName'}
+                                onChange={(e) => setFormData({...formData, paymentModeDetails: {...formData.paymentModeDetails, cardHolderName: e.target.value}})}
+                                key={'cardHolderName'}
+                                value={formData.paymentModeDetails['cardHolderName']}
+                                lcol={8}
+                                icol={16}
+                            />
+                            
+                            <InputField
+                                label={'Card Expiry'}
+                                type={'text'}
+                                name={'cardExpiry'}
+                                onChange={(e) => setFormData({...formData, paymentModeDetails: {...formData.paymentModeDetails, cardExpiry: e.target.value}})}
+                                key={'cardExpiry'}
+                                value={formData.paymentModeDetails['cardExpiry']}
+                                lcol={8}
+                                icol={16}
+                            />
+                           </> : null
+                       
+                    }
+
+
                 </Row> 
             </div>
                    

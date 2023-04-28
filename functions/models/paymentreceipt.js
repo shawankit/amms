@@ -9,12 +9,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'customerId',
         as: 'customer'
       });
+      PaymentReceipt.belongsTo(models.PaymentModeDetails, {
+        foreignKey: 'paymentModeDetailsId',
+        as: 'paymentModeDetails'
+      });
     }
   }
   PaymentReceipt.init({
     companyId: DataTypes.UUID,
     customerId: DataTypes.UUID,
-    amountReceived: DataTypes.DOUBLE
+    amountReceived: DataTypes.DOUBLE,
+    paymentMode: {
+      type: DataTypes.ENUM,
+      values: ['CREDIT CARD', 'UPI', 'DEBIT CARD', 'CASH']
+    },
+    paymentModeDetailsId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'PaymentReceipt',
