@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './index.css';
@@ -11,6 +11,18 @@ import Stock from './components/Stock';
 import ListComponent from './components/ListComponent';
 
 const { Header, Content, Footer, Sider } = Layout;
+
+const Page = ({ page }) => {
+  const [reload, setReload] = useState(false);
+  useEffect(() => {
+    setReload(false);
+}, [page]);
+  return (
+    <div>
+      <ListComponent page={page} reload={reload} setReload={setReload} />
+    </div>
+  );
+};
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -58,7 +70,7 @@ const App = () => {
                 <Stock />
               </Route>
               <Route exact path="/payments">
-                <ListComponent page={'payment-receipts'} reload={false} noaction={true}/>
+                <Page page={'payment-receipts'}/>
               </Route>
               <Route exact path="/purchases">
                 <Invoices type={'purchase'}/>

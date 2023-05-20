@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM,
       values: ['CREDIT CARD', 'UPI', 'DEBIT CARD', 'CASH']
     },
-    paymentModeDetailsId: DataTypes.UUID
+    paymentModeDetailsId: DataTypes.UUID,
+    additionalDue: DataTypes.DOUBLE
   }, {
     sequelize,
     modelName: 'PaymentReceipt',

@@ -152,7 +152,7 @@ const ListComponent = ({ page, reload, setEditData, setReload, noaction }) => {
         ...getRender(column, page)
     }));
 
-    if(!noaction){
+    //if(!noaction){
         columns.push({
             title: 'Action',
             key: 'operation',
@@ -160,9 +160,11 @@ const ListComponent = ({ page, reload, setEditData, setReload, noaction }) => {
             render: (data) => {
                 return (
                     <div className="float-right">
+                        {page !== 'payment-receipts' &&  
                         <Button key={'edit'+data.id} type="primary" onClick={() => onEdit(data)} title="Edit">
                             <EditOutlined />
                         </Button>
+                        }       
                         
                         <Button key={'delete'+data.id} type="secondary" onClick={() => onDelete(data)} className="ml-2" title="Delete">
                             <DeleteOutlined />
@@ -171,7 +173,7 @@ const ListComponent = ({ page, reload, setEditData, setReload, noaction }) => {
                 );
             },
         });
-    }
+    //}
    
 
     const handlePageChange = (page) => {
@@ -192,9 +194,8 @@ const ListComponent = ({ page, reload, setEditData, setReload, noaction }) => {
     }
     if(total > 10) pageSizeOptions.push( total + '');
 
-
     return (
-        <div>
+        <div  style={{ height: 'calc(100vh - 150px)', overflowY :'auto'}}>
             <div className="site-layout-background p-5 mt-1">
                 <Title level={3} style={{color: 'rgba(107, 114, 128, var(--tw-text-opacity))'}} className='border-b-2' >
                     {getPageName(page)}

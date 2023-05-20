@@ -23,7 +23,7 @@ const post = async (req) => {
     const response = await composeResult(
         () => remainingAmount > 0 ? SettleDueInvoicesServices.perform({ customerId , amountReceived: remainingAmount}) : Result.Ok({}),
         () => db.update(new UpdateCustomerDueQuery(customerId, -1 * remainingAmount, parseFloat(additionalDue))),
-        () => db.execute(new CreatePaymentReceiptQuery(id, customerId, amountReceived, paymentMode, paymentModeDetails))
+        () => db.execute(new CreatePaymentReceiptQuery(id, customerId, amountReceived, paymentMode, paymentModeDetails, additionalDue))
     )();
 
     return respond(response,'Successfully Created Payment Receipt', 'Failed to create Payment Receipt')

@@ -1,12 +1,13 @@
 const { PaymentReceipt, PaymentModeDetails } = require("../../../models");
 const uuid = require('uuid');
 module.exports = class CreatePaymentReceiptQuery {
-    constructor(id,customerId,amountReceived, paymentMode, paymentModeDetails){
+    constructor(id,customerId,amountReceived, paymentMode, paymentModeDetails, additionalDue){
         this.details = {
             id,
             customerId,
             amountReceived,
             paymentMode,
+            additionalDue
         }
         this.paymentModeDetails = paymentModeDetails;
     }

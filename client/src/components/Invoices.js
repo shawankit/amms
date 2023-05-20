@@ -46,7 +46,7 @@ const Invoices = ({ type }) => {
 
     useEffect(() => {
         fetchCustomers();
-    },[]);
+    },[type]);
 
     useEffect(() => {
         fetchInvoices();
