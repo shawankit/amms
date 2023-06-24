@@ -13,7 +13,7 @@ const MilkBulkFom = ({ customerId , type , setRatesToData}) => {
 
     const onChange = (e, data) => {
         const rateObj = {...rates,
-            [data.id]: {
+            [data.categoryId]: {
                 name: data.name, 
                 rate: e.target.value,
                 categoryId: data.categoryId,
