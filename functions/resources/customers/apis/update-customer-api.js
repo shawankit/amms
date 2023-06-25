@@ -21,7 +21,7 @@ const post = async (req) => {
             () => type === 'special',
             () => composeResult(
                 () => Result.Ok(customer),
-                () => db.execute(new CreateBulkMilkCategoryQuery(rates.map((rate) => ({...rate, customerId: id }))))
+                () => db.execute(new CreateBulkMilkCategoryQuery(rates.map((rate) => ({...rate, customerId: id, id: rate.id === rate.categoryId ?  uuid.v4() :  rate.id }))))
             )(),
             () => Result.Ok(customer)
         )(),
